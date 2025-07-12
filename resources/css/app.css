@@ -1,0 +1,25 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Tema Coklat */
+body {
+    background-color: #f5f2eb;
+    color: #3e2f1c;
+}
+
+.navbar {
+    background-color: #6d4c41;
+    color: white;
+}
+
+.navbar a {
+    color: white;
+}
+
+.navbar a:hover {
+    color: #ffebcd;
+}
+
+.dark-mode {
+    background-color: #2e2e2e !important;
+    color: #eee !important;
+}
