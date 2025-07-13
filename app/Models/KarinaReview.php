@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KarinaBorrow extends Model
+class KarinaReview extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
         'book_id',
-        'borrow_date',
-        'return_date',
+        'rating',
+        'comment',
     ];
 
     public function user()

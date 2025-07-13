@@ -1,30 +1,55 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'Perpustakaan Karina') }}</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    {{-- Bootstrap CDN --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    {{-- Custom CSS --}}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+</head>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+<body class="min-vh-100 d-flex flex-column">
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
+    {{-- Navbar --}}
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand text-white" href="{{ url('/') }}">📚 Karina-Perpus</a>
+
+            <button class="btn btn-sm btn-light ms-auto" id="themeToggle">🌙 Mode</button>
         </div>
-    </body>
+    </nav>
+
+    {{-- Konten utama --}}
+    <main class="flex-fill d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+            <div class="text-center mb-4">
+                <a href="/">
+                    <x-application-logo class="w-25 h-25" />
+                </a>
+                <h4 class="mt-3">Selamat Datang</h4>
+            </div>
+
+            {{ $slot }}
+        </div>
+    </main>
+
+    {{-- Footer --}}
+    <footer class="text-center py-3 bg-light mt-auto">
+        <small>© {{ date('Y') }} Karina Sadidah - Perpustakaan Digital</small>
+    </footer>
+
+    {{-- JS Bootstrap --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Dark mode toggle --}}
+    <script>
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
 </html>

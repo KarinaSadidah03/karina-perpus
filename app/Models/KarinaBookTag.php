@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KarinaCategory extends Model
+class KarinaBookTag extends Model
 {
     use HasFactory;
 
@@ -13,6 +13,6 @@ class KarinaCategory extends Model
 
     public function books()
     {
-        return $this->hasMany(KarinaBook::class, 'category_id');
+        return $this->belongsToMany(KarinaBook::class, 'karina_book_tag_book', 'tag_id', 'book_id');
     }
 }
