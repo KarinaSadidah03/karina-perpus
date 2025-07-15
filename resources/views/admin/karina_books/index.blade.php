@@ -40,6 +40,7 @@
                     <th>Judul</th>
                     <th>Penulis</th>
                     <th>Kategori</th>
+                    <th>Tag</th>
                     <th>Deskripsi</th>
                     <th width="170px">Aksi</th>
                 </tr>
@@ -54,6 +55,13 @@
                         <td>{{ $book->author }}</td>
                         <td>{{ $book->category->name ?? '-' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($book->description, 80) }}</td>
+                         <td>
+                            @forelse ($book->tags as $tag)
+                                <span class="badge bg-info text-dark">{{ $tag->name }}</span>
+                            @empty
+                                <span class="text-muted">-</span>
+                            @endforelse
+                        </td>
                         <td>
                             <a href="{{ route('admin.karina_books.edit', $book->id) }}" class="btn btn-sm btn-warning">Edit</a>
 

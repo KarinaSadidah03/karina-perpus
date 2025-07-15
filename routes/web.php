@@ -58,5 +58,14 @@ Route::get('/books', [KarinaBookController::class, 'list'])->name('karina_books.
 
 Route::post('/books/{id}/reviews', [KarinaReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
 
+Route::resource('/admin/tags', \App\Http\Controllers\KarinaBookTagController::class)->names([
+    'index' => 'admin.karina_tags.index',
+    'create' => 'admin.karina_tags.create',
+    'store' => 'admin.karina_tags.store',
+    'edit' => 'admin.karina_tags.edit',
+    'update' => 'admin.karina_tags.update',
+    'destroy' => 'admin.karina_tags.destroy',
+]);
+
 // Auth routes dari Laravel Breeze
 require __DIR__ . '/auth.php';

@@ -69,6 +69,24 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Tag Buku</label>
+            <div class="row">
+                @foreach ($tags as $tag)
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="tag_ids[]" value="{{ $tag->id }}"
+                                class="form-check-input" id="tag{{ $tag->id }}"
+                                {{ $book->tags->contains($tag->id) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tag{{ $tag->id }}">
+                                {{ $tag->name }}
+                            </label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-save"></i> Update
         </button>

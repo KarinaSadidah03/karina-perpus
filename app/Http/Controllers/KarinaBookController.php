@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Attributes\Middleware;
+use App\Models\KarinaBookTag;
 use App\Models\KarinaBook;
 use App\Models\KarinaCategory;
 
@@ -35,7 +36,8 @@ class KarinaBookController extends Controller
     public function create()
     {
         $categories = KarinaCategory::all();
-        return view('admin.karina_books.create', compact('categories'));
+        $tags = KarinaBookTag::all(); // ← ambil semua tag
+        return view('admin.karina_books.create', compact('categories','tags'));
     }
 
     // Simpan data buku baru
@@ -48,12 +50,14 @@ class KarinaBookController extends Controller
             'file_pdf' => 'required|mimes:pdf|max:5120',
             'description' => 'required|string',
             'category_id' => 'required|exists:karina_categories,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:karina_book_tags,id'
         ]);
 
         $coverPath = $request->file('cover_image')->store('covers', 'public');
         $pdfPath = $request->file('file_pdf')->store('books', 'public');
 
-        KarinaBook::create([
+        $book = KarinaBook::create([
             'title' => $validated['title'],
             'author' => $validated['author'],
             'cover_image' => $coverPath,
@@ -62,8 +66,15 @@ class KarinaBookController extends Controller
             'category_id' => $validated['category_id'],
         ]);
 
+        // Simpan relasi tag
+        if ($request->has('tag_ids')) {
+            $book->tags()->sync($request->tag_ids);
+        }
+
+
         return redirect()->route('admin.karina_books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
+
 
     // Tampilkan detail buku
     public function show($id)
@@ -77,7 +88,9 @@ class KarinaBookController extends Controller
     {
         $book = KarinaBook::findOrFail($id);
         $categories = KarinaCategory::all();
-        return view('admin.karina_books.edit', compact('book', 'categories'));
+        $tags = \App\Models\KarinaBookTag::all();
+
+        return view('admin.karina_books.edit', compact('book', 'categories','tags'));
     }
 
     // Update data buku
@@ -92,15 +105,17 @@ class KarinaBookController extends Controller
             'file_pdf' => 'nullable|mimes:pdf|max:5120',
             'description' => 'required|string',
             'category_id' => 'required|exists:karina_categories,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:karina_book_tags,id'
         ]);
 
         if ($request->hasFile('cover_image')) {
-            Storage::disk('public')->delete($book->cover_image);
+            \Storage::disk('public')->delete($book->cover_image);
             $book->cover_image = $request->file('cover_image')->store('covers', 'public');
         }
 
         if ($request->hasFile('file_pdf')) {
-            Storage::disk('public')->delete($book->file_pdf);
+            \Storage::disk('public')->delete($book->file_pdf);
             $book->file_pdf = $request->file('file_pdf')->store('books', 'public');
         }
 
@@ -111,8 +126,14 @@ class KarinaBookController extends Controller
             'category_id' => $validated['category_id'],
         ]);
 
+        if ($request->has('tag_ids')) {
+            $book->tags()->sync($request->tag_ids);
+            } else {
+                $book->tags()->sync([]); // kosongkan jika tidak ada yang dicentang
+            }
         return redirect()->route('admin.karina_books.index')->with('success', 'Buku berhasil diperbarui.');
     }
+
 
     // Hapus buku
     public function destroy($id)

@@ -43,6 +43,23 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Tag Buku</label>
+            <div class="row">
+                @foreach ($tags as $tag)
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="tag_ids[]" value="{{ $tag->id }}"
+                                class="form-check-input" id="tag{{ $tag->id }}">
+                            <label class="form-check-label" for="tag{{ $tag->id }}">
+                                {{ $tag->name }}
+                            </label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="mb-3">
             <label for="description" class="form-label">Deskripsi</label>
             <textarea name="description" rows="4" class="form-control" required>{{ old('description') }}</textarea>
         </div>
@@ -55,6 +72,18 @@
         <div class="mb-3">
             <label for="file_pdf" class="form-label">File Buku (PDF)</label>
             <input type="file" name="file_pdf" accept="application/pdf" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="tags" class="form-label">Tag Buku</label>
+            <select name="tags[]" class="form-select" multiple>
+                @foreach ($tags as $tag)
+                    <option value="{{ $tag->id }}" {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
+                        {{ $tag->name }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="text-muted">Gunakan Ctrl (atau Cmd) untuk memilih lebih dari satu tag</small>
         </div>
 
         <button type="submit" class="btn btn-success">

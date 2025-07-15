@@ -54,6 +54,9 @@
                                     <i class="bi bi-tags"></i> Kelola Kategori
                                 </a>
                             </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.karina_tags.index') }}">Kelola Tag
+                                </a>
+                            </li>
                         @endif
 
                         {{-- Profil --}}

@@ -4,12 +4,12 @@
     <div class="container my-5">
         {{-- Heading utama --}}
         <div class="text-center mb-5">
-            <h1 class="fw-bold">Selamat Datang di Perpustakaan Karina 📚</h1>
+            <h1 class="fw-bold">Selamat Datang di Perpustakaan Karina</h1>
             <p class="lead">Baca dan temukan buku favoritmu secara online ✨</p>
         </div>
 
         {{-- Rekomendasi Buku --}}
-        <h3 class="mb-4">📖 Rekomendasi Buku</h3>
+        <h3 class="mb-4">Rekomendasi Buku</h3>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
             @forelse ($books as $book)
