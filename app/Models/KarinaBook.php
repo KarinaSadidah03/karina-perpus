@@ -11,6 +11,7 @@ class KarinaBook extends Model
 
     protected $fillable = [
         'title',
+        'author',
         'cover_image',
         'file_pdf',
         'category_id',

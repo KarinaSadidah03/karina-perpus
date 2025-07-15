@@ -2,18 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KarinaBook;
-use App\Models\KarinaCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Routing\Attributes\Middleware;
+use App\Models\KarinaBook;
+use App\Models\KarinaCategory;
 
+#[Middleware('auth')]
+#[Middleware('admin')]
 class KarinaBookController extends Controller
 {
     // Tampilkan daftar buku (Admin)
-    public function index()
+    public function index(Request $request)
     {
-        $books = KarinaBook::with('category')->latest()->paginate(10);
-        return view('admin.karina_books.index', compact('books'));
+        $query = KarinaBook::with('category');
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $books = $query->latest()->paginate(10);
+        $categories = KarinaCategory::all();
+
+        return view('admin.karina_books.index', compact('books', 'categories'));
     }
 
     // Tampilkan form tambah buku
@@ -28,6 +43,7 @@ class KarinaBookController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
             'cover_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'file_pdf' => 'required|mimes:pdf|max:5120',
             'description' => 'required|string',
@@ -39,6 +55,7 @@ class KarinaBookController extends Controller
 
         KarinaBook::create([
             'title' => $validated['title'],
+            'author' => $validated['author'],
             'cover_image' => $coverPath,
             'file_pdf' => $pdfPath,
             'description' => $validated['description'],
@@ -48,7 +65,7 @@ class KarinaBookController extends Controller
         return redirect()->route('admin.karina_books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
-    // Tampilkan detail buku (sudah kamu buat)
+    // Tampilkan detail buku
     public function show($id)
     {
         $book = KarinaBook::with('category', 'reviews')->findOrFail($id);
@@ -70,6 +87,7 @@ class KarinaBookController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'file_pdf' => 'nullable|mimes:pdf|max:5120',
             'description' => 'required|string',
@@ -88,6 +106,7 @@ class KarinaBookController extends Controller
 
         $book->update([
             'title' => $validated['title'],
+            'author' => $validated['author'],
             'description' => $validated['description'],
             'category_id' => $validated['category_id'],
         ]);
@@ -103,5 +122,29 @@ class KarinaBookController extends Controller
         $book->delete();
 
         return redirect()->route('admin.karina_books.index')->with('success', 'Buku berhasil dihapus.');
+    }
+
+    // Tampilkan daftar buku untuk user umum
+    public function list(Request $request)
+    {
+        $categories = KarinaCategory::all();
+        $query = KarinaBook::with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                ->orWhere('author', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $books = $query->latest()->paginate(9);
+
+        return view('karina_books.list', compact('books', 'categories'));
     }
 }

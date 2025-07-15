@@ -2,19 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KarinaReview extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'book_id',
-        'rating',
-        'comment',
-    ];
+    protected $fillable = ['user_id', 'book_id', 'content', 'rating'];
 
     public function user()
     {

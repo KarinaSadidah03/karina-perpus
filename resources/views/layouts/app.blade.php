@@ -19,52 +19,55 @@
 </head>
 <body>
     {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #6d4c41;">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <i class="bi bi-book"></i> Karina-Perpus
-            </a>
+    <nav class="navbar navbar-expand-lg custom-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url('/') }}">Perpustakaan Karina</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#karinaNavbar" aria-controls="karinaNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="karinaNavbar">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    @auth
-                        {{-- Dashboard --}}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
-                                <i class="bi bi-speedometer2"></i> Dashboard
-                            </a>
-                        </li>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    {{-- Menu Umum --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/') }}">Beranda</a>
+                    </li>
 
-                        {{-- Admin-only: Kelola Buku --}}
-                        @if (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('karina_books.list') }}">
+                            <i class="bi bi-journal-bookmark"></i> Daftar Buku
+                        </a>
+                    </li>
+
+                    @auth
+                        {{-- Admin menu --}}
+                        @if(auth()->user()->role === 'admin')
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/admin/books') }}">
-                                    <i class="bi bi-book-half"></i> Kelola Buku
+                                <a class="nav-link" href="{{ route('admin.karina_books.index') }}">
+                                    <i class="bi bi-book"></i> Kelola Buku
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.karina_categories.index') }}">
+                                    <i class="bi bi-tags"></i> Kelola Kategori
                                 </a>
                             </li>
                         @endif
 
-                        {{-- Umum: Profil & Riwayat --}}
+                        {{-- Profil --}}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/profile') }}">
-                                <i class="bi bi-person-circle"></i> Profil
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/riwayat-peminjaman') }}">
-                                <i class="bi bi-clock-history"></i> Riwayat Peminjaman
+                            <a class="nav-link" href="{{ route('profile.edit') }}">
+                                <i class="bi bi-person"></i> Profil
                             </a>
                         </li>
 
                         {{-- Logout --}}
                         <li class="nav-item">
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-link nav-link" style="display:inline; cursor:pointer;">
+                                <button type="submit" class="btn nav-link border-0 bg-transparent">
                                     <i class="bi bi-box-arrow-right"></i> Logout
                                 </button>
                             </form>
@@ -76,23 +79,12 @@
                                 <i class="bi bi-box-arrow-in-right"></i> Login
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                <i class="bi bi-person-plus"></i> Register
-                            </a>
-                        </li>
                     @endauth
-
-                    {{-- Theme Toggle --}}
-                    <li class="nav-item">
-                        <button class="btn btn-sm btn-light ms-3" id="themeToggle">
-                            <i class="bi bi-moon-stars-fill"></i>
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+
 
     {{-- Header & Content --}}
     <main class="container py-4">

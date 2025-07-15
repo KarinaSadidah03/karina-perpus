@@ -2,40 +2,52 @@
 
 @section('content')
 <div class="container">
-    <h2>Kategori Buku</h2>
-
-    <a href="{{ route('karinacategories.create') }}" class="btn btn-primary mb-3">+ Tambah Kategori</a>
+    <h2 class="mb-4">Kategori Buku</h2>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Nama Kategori</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($categories as $cat)
-                <tr>
-                    <td>{{ $cat->name }}</td>
-                    <td>
-                        <a href="{{ route('karinacategories.edit', $cat->id) }}" class="btn btn-warning btn-sm">Edit</a>
+    <a href="{{ route('admin.karina_categories.create') }}" class="btn btn-primary mb-3">
+        <i class="bi bi-plus-lg"></i> Tambah Kategori
+    </a>
 
-                        <form action="{{ route('karinacategories.destroy', $cat->id) }}" method="POST" class="d-inline"
-                              onsubmit="return confirm('Yakin hapus?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                        </form>
-                    </td>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Nama Kategori</th>
+                    <th width="150px">Aksi</th>
                 </tr>
-            @empty
-                <tr><td colspan="2">Belum ada kategori.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse ($categories as $index => $category)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $category->name }}</td>
+                        <td>
+                            <a href="{{ route('admin.karina_categories.edit', $category->id) }}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
+                            <form action="{{ route('admin.karina_categories.destroy', $category->id) }}" method="POST" class="d-inline"
+                                  onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">Belum ada kategori.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection

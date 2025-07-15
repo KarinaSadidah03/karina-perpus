@@ -19,14 +19,50 @@
 
         {{-- Ulasan buku --}}
         <hr>
-        <h5 class="mt-4">Ulasan Pembaca</h5>
-        @forelse ($book->reviews as $review)
-            <div class="mb-3 border-bottom pb-2">
-                <strong>{{ $review->user->name }}</strong> ⭐️ {{ $review->rating }}/5<br>
-                <p>{{ $review->comment }}</p>
+    <h4><i class="bi bi-chat-left-text"></i> Ulasan Pembaca</h4>
+
+    @if ($book->reviews->isEmpty())
+        <p class="text-muted">Belum ada ulasan untuk buku ini.</p>
+    @else
+        @foreach ($book->reviews as $review)
+            <div class="border rounded p-3 mb-3">
+                <strong>{{ $review->user->name }}</strong>
+                <span class="text-warning">({{ $review->rating }} ★)</span>
+                <p class="mb-0">{{ $review->content }}</p>
+                <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
             </div>
-        @empty
-            <p>Belum ada ulasan.</p>
-        @endforelse
+        @endforeach
+    @endif
+
+    @auth
+    <hr>
+    <h5>Tambahkan Ulasan Anda</h5>
+    <form action="{{ route('reviews.store', $book->id) }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <select name="rating" class="form-select" required>
+                <option value="">Pilih rating</option>
+                @for ($i = 5; $i >= 1; $i--)
+                    <option value="{{ $i }}">{{ $i }} ★</option>
+                @endfor
+            </select>
+        </div>
+
+        <div class="mb-3">
+                    <label for="content" class="form-label">Ulasan</label>
+                    <textarea name="content" class="form-control" rows="3" required>{{ old('content') }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Kirim Ulasan
+                </button>
+            </form>
+        @endauth
+
+        @guest
+            <p class="text-muted">Silakan <a href="{{ route('login') }}">login</a> untuk menulis ulasan.</p>
+        @endguest
+
     </div>
 @endsection
